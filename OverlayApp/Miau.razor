@@ -1,0 +1,54 @@
+﻿<div style="display: flex; flex-direction: row; gap: 6px; padding: 0 16px; height: 16px; width: 100%;">
+    <button style="font-size: 8px;" @onclick="ToggleAppHeight_OnInput">Toggle</button>
+</div>
+
+<div style="display: flex; flex-direction: row; gap: 6px; padding: 0 16px;">
+    <img src="@CurrentMediaInfo?.Thumbnail" width="85" height="85"/>
+
+    <div>
+        <div>
+            <h1>@CurrentMediaInfo?.Title</h1>
+            <p>@CurrentMediaInfo?.Artist</p>
+        </div>
+
+        <div>
+            <button @onclick="MediaController.PlayPrevious">&larr;</button>
+            <button @onclick="MediaController.Toggle">Toggle</button>
+            <button @onclick="MediaController.PlayNext">&rarr;</button>
+        </div>
+
+        <input id="DeviceVolume_Input" type="range"
+               @oninput="(ChangeEventArgs e) => ChangeDeviceVolume_OnInput(e)" />
+    </div>
+</div>
+
+@code {
+    private Classes.MediaInfo? CurrentMediaInfo;
+    private Classes.MediaController MediaController = new();
+
+    protected override void OnInitialized()
+    {
+        MediaController.MediaChanged += async (s, e) =>
+        {
+            CurrentMediaInfo = e.MediaInfo;
+            await InvokeAsync(StateHasChanged);
+
+            /* Solução temporária pra imagem da thumbnail carregar */
+            await Task.Delay(1000);
+            await InvokeAsync(StateHasChanged);
+
+            Debug.WriteLine($"CurrentMediaInfo Changed, UI 100%.");
+        };
+    }
+
+    private void ChangeDeviceVolume_OnInput(ChangeEventArgs e)
+    {
+        if (e.Value is not null && int.TryParse(e.Value.ToString(), out int Value))
+            MediaController.ChangeDeviceVolume(Value / 100f);
+    }
+
+    private void ToggleAppHeight_OnInput()
+    {
+        ScreenSizeAdjuster.ToggleFullHeight();
+    }
+}

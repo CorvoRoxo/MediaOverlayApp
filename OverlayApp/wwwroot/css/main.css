@@ -1,0 +1,22 @@
+﻿html, body {
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    height: max-content;
+    width: max-content;
+
+    background-color: #ffffff;
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+h1 {
+    font-size: 1.5rem;
+
+    word-break: break-word;
+    overflow-wrap: break-word;
+
+    max-width: 100%;
+    margin: 0;
+}
